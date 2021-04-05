@@ -29,6 +29,16 @@ class User implements UserInterface
     private $roles = [];
 
     /**
+     * ORM\OneToMany(targetEntity="Participant", mappedBy="user")
+     */
+    private $participants;
+
+    /**
+     * ORM\OneToMany(targetEntity="Message", mappedBy="user")
+     */
+    private $messages;
+
+    /**
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
