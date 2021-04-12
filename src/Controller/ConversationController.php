@@ -8,6 +8,7 @@ use App\Repository\ConversationRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,23 +18,24 @@ use Symfony\Component\Routing\Annotation\Route;
 class ConversationController extends AbstractController
 {
 
-    private $userRepository;
-    private $conversationRepository;
-    private $em;
+    private UserRepository $userRepository;
+    private ConversationRepository $conversationRepository;
+    private EntityManagerInterface $em;
 
-    public function __construct(UserRepository $userRepository, EntityManagerInterface $em, ConversationRepository $conversationRepository) {
+    public function __construct(UserRepository $userRepository, EntityManagerInterface $em, ConversationRepository $conversationRepository)
+    {
         $this->userRepository = $userRepository;
         $this->em = $em;
         $this->conversationRepository = $conversationRepository;
     }
 
-    #[Route('/{id}', name: 'getConversations')]
-    public function index(Request $request, int $id)
+    #[Route('/', name: 'newConversations', methods: ['POST'])]
+    public function index(Request $request)
     {
         $otherUser = $request->get("otherUser", 0);
-        $otherUser = $this->userRepository->find($id);
+        $otherUser = $this->userRepository->find($otherUser);
 
-        if(is_null($otherUser)) {
+        if (is_null($otherUser)) {
             throw new \Exception("user not found", 404);
         }
 
@@ -48,7 +50,7 @@ class ConversationController extends AbstractController
         // dd($conversation);
         if (count($conversation)) {
             throw new \Exception("Conversation already exists");
-        }            
+        }
         $conversation = new Conversation();
 
         $participant = new Participant();
@@ -76,5 +78,13 @@ class ConversationController extends AbstractController
         return $this->json([
             'id' => $conversation->getId()
         ], Response::HTTP_CREATED, [], []);
+    }
+
+
+    #[Route('/', name: 'getConversations', methods: ['GET'])]
+    public function getConversations(): JsonResponse
+    {
+        $conversations = $this->conversationRepository->findConversationsByUser($this->getUser()->getId());
+        return $this->json([$conversations]);
     }
 }
