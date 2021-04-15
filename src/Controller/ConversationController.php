@@ -40,7 +40,7 @@ class ConversationController extends AbstractController
         }
 
         //cannot make conversation with yourself
-        if ($otherUser->getId() === $user = $this->getUser()->getId()) {
+        if ($otherUser->getId() === $this->getUser()->getId()) {
             throw new \Exception("cannot make conversation with yourself...");
         }
 

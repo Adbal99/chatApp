@@ -48,7 +48,7 @@ class MessageRepository extends ServiceEntityRepository
     }
     */
 
-    public function findMessagesByConversation(int $conversationId)
+    public function findMessagesByConversationId(int $conversationId)
     {
         $qb = $this->createQueryBuilder('m');
         $qb ->

@@ -21,6 +21,9 @@ trait Timestamp
         return $this->createdAt;
     }
 
+    /**
+     * @ORM\PrePersist()
+     */
     public function prePersist()
     {
         $this->createdAt = new \Datetime();
