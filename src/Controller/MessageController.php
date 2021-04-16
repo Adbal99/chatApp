@@ -56,14 +56,16 @@ class MessageController extends AbstractController
     #[Route('/{id}', name: 'newMessage', methods: ['POST'])]
     public function newMessage(Request $request, Conversation $conversation)
     {
+        $this->denyAccessUnlessGranted('add', $conversation);
+
         // bring back security, delete user repository
         $user = $this->getUser();
-        $content = $request->get('content', null);
+        $content = $request->get('content');
 
 
         $message = new Message();
         $message->setContent($content);
-        $message->setUser($this->userRep->findOneBy(['id' => 1]));
+        $message->setUser($this->userRep->findOneBy(['id' => 2]));
         $message->setMine(true);
 
         $conversation->addMessage($message);
