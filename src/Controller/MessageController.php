@@ -18,13 +18,11 @@ class MessageController extends AbstractController
     const ATTRIBUTES_TO_SERIALIZE = ['id', 'content', 'createdAt', 'mine'];
     private $entityManager;
     private $messageRepository;
-    private $userRep;
 
-    public function __construct(EntityManagerInterface $entityManager, MessageRepository $messageRepository, UserRepository $userRep)
+    public function __construct(EntityManagerInterface $entityManager, MessageRepository $messageRepository)
     {
         $this->entityManager = $entityManager;
         $this->messageRepository = $messageRepository;
-        $this->userRep = $userRep;
     }
 
     #[Route('/{id}', name: 'getMessages', methods: ['GET'])]
@@ -56,16 +54,16 @@ class MessageController extends AbstractController
     #[Route('/{id}', name: 'newMessage', methods: ['POST'])]
     public function newMessage(Request $request, Conversation $conversation)
     {
+        //can i add message
         $this->denyAccessUnlessGranted('add', $conversation);
 
-        // bring back security, delete user repository
         $user = $this->getUser();
         $content = $request->get('content');
 
 
         $message = new Message();
         $message->setContent($content);
-        $message->setUser($this->userRep->findOneBy(['id' => 2]));
+        $message->setUser($user->getId());
         $message->setMine(true);
 
         $conversation->addMessage($message);
