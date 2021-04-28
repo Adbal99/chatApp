@@ -70,8 +70,8 @@ class MessageController extends AbstractController
     #[Route('/{id}', name: 'newMessage', methods: ['POST'])]
     public function newMessage(Request $request, Conversation $conversation, SerializerInterface $serializerInterface)
     {
-        $user = $this->userRep->findOneBy(['id' => 2,]);
-        // $user = $this->getUser();
+        // $user = $this->userRep->findOneBy(['id' => 2,]);
+        $user = $this->getUser();
 
         $recipient = $this->participantRepository->findParticipantByConversationIdAndUserid(
             $conversation->getId(),
@@ -79,7 +79,7 @@ class MessageController extends AbstractController
         );
 
         //can i add message
-        // $this->denyAccessUnlessGranted('add', $conversation);
+        $this->denyAccessUnlessGranted('add', $conversation);
 
         $content = $request->get('content');
 
