@@ -12,9 +12,12 @@ import './styles/app.css';
 import './bootstrap';
 
 import Vue from 'vue';
+import store from './js/store/store';
+
 
 import App from './components/app.vue';
 
 new Vue({
+    store,
     render: h => h(App)
 }).$mount('#app');
