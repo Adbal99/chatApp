@@ -12,12 +12,39 @@ import './styles/app.css';
 import './bootstrap';
 
 import Vue from 'vue';
+import VueRouter from "vue-router";
 import store from './js/store/store';
 
+import app from './components/app.vue';
+import blank from './components/right/blank.vue';
+import right from './components/right/right.vue';
 
-import App from './components/app.vue';
+Vue.use(VueRouter);
+
+const routes = [
+    {
+        name: 'blank',
+        path: '/',
+        component: blank
+    },
+
+    {
+        name: 'conversation',
+        path: '/converesation/:id',
+        component: right
+    }
+];
+
+const router = new VueRouter({
+    mode: "abstract",
+    routes
+})
+
 
 new Vue({
     store,
-    render: h => h(App)
+    router,
+    render: h => h(app)
 }).$mount('#app');
+
+router.replace('/');

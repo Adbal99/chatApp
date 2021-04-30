@@ -41,6 +41,10 @@ class MessageController extends AbstractController
         $this->userRep = $userRep;
     }
 
+
+    /**
+     * messages for given conversation id
+     */
     #[Route('/{id}', name: 'getMessages', methods: ['GET'])]
 
     public function index(Request $request, Conversation $conversation)

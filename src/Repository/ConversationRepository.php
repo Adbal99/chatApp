@@ -87,7 +87,7 @@ class ConversationRepository extends ServiceEntityRepository
             ->innerJoin('c.participants', 'me', Join::WITH, $qb->expr()->eq('me.user', ':user'))
             ->leftJoin('c.lastMessage', 'lm')
             ->innerJoin('me.user', 'meUser')
-            ->innerJoin('me.user', 'otherUser')
+            ->innerJoin('p.user', 'otherUser')
             ->where('meUser.id = :user')
             ->setParameter('user', $userId)
             ->orderBy('lm.createdAt', 'DESC')
