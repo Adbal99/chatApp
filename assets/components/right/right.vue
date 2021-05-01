@@ -1,9 +1,11 @@
 <template lang="">
     <div class="col-7 px-0">
-      {{ MESSAGES }}
       <div class="px-4 py-5 chat-box bg-white">
       <!-- message -->
-      <message></message>
+      <template v-for="(message, index) in MESSAGES">
+
+        <message :message="message"></message>
+      </template>
       </div>
 
       <!-- Typing area -->
@@ -17,10 +19,9 @@ import messageInput from "./messageInput";
 export default {
   components: { message, messageInput },
   computed: {
-    MESSAGES () {
-      console.log(this.$route.params.id)
+    MESSAGES() {
       return this.$store.getters.MESSAGES(this.$route.params.id);
-    }
+    },
   },
   mounted() {
     // console.log(this.$route.params.id)

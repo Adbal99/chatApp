@@ -1,44 +1,46 @@
-import Vue from 'vue';
+import Vue from "vue";
 
 export default {
-    state: {
-        conversations: []
-    },
-    getters: {
-        CONVERSATIONS: state => state.conversations,
+  state: {
+    conversations: [],
+  },
+  getters: {
+    CONVERSATIONS: (state) => state.conversations,
 
-        MESSAGES: state => conversationId => {
-            return state.conversations.find(i => i.conversationId === conversationId).messages
-        }
+    MESSAGES: (state) => (conversationId) => {
+      return state.conversations[0].find(
+        (i) => i.conversationId === conversationId
+      ).messages;
     },
-    mutations: {
-        SET_CONVERSATIONS: (state, payload) => {
-            state.conversations = payload
-        },
-
-        SET_MESSAGES: (state, { conversationId, payload }) => {
-            Vue.set(
-                state.conversations.find(i => i.conversationId === conversationId),
-                'messages',
-                payload
-            );
-        }
+  },
+  mutations: {
+    SET_CONVERSATIONS: (state, payload) => {
+      state.conversations = payload;
     },
-    actions: {
-        GET_CONVERSATIONS: ({ commit }) => {
-            return fetch('/conversations')
-                .then((result) => result.json())
-                .then((result) => {
-                    commit("SET_CONVERSATIONS", result)
-                })
-        },
 
-        GET_MESSAGES: ({ commit }, conversationId) => {
-            return fetch(`/messages/${conversationId}`)
-                .then((result) => result.json())
-                .then((result) => {
-                    commit("SET_MESSAGES", { conversationId, payload: result })
-                });
-        }
-    }
-}
+    SET_MESSAGES: (state, { conversationId, payload }) => {
+      Vue.set(
+        state.conversations[0].find((i) => i.conversationId === conversationId),
+        "messages",
+        payload
+      );
+    },
+  },
+  actions: {
+    GET_CONVERSATIONS: ({ commit }) => {
+      return fetch("/conversations")
+        .then((result) => result.json())
+        .then((result) => {
+          commit("SET_CONVERSATIONS", result);
+        });
+    },
+
+    GET_MESSAGES: ({ commit }, conversationId) => {
+      return fetch(`/messages/${conversationId}`)
+        .then((result) => result.json())
+        .then((result) => {
+          commit("SET_MESSAGES", { conversationId, payload: result });
+        });
+    },
+  },
+};

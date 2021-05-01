@@ -43,7 +43,7 @@ class MessageController extends AbstractController
 
 
     /**
-     * messages for given conversation id
+     * messages for given conversation {id}
      */
     #[Route('/{id}', name: 'getMessages', methods: ['GET'])]
 

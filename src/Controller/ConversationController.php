@@ -81,7 +81,7 @@ class ConversationController extends AbstractController
     }
 
 
-    #[Route('/', name: 'getConversations', methods: ['GET'])]
+    #[Route('/', name: 'getConversations', methods: ['GET'])]   
     public function getConversations(Request $request): JsonResponse
     {
         $conversations = $this->conversationRepository->findConversationsByUser($this->getUser()->getId());
