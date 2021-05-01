@@ -1,6 +1,6 @@
 <template lang="">
     <div class="col-7 px-0">
-      <div class="px-4 py-5 chat-box bg-white">
+      <div class="px-4 py-5 chat-box bg-white" ref="messagesBody">
       <!-- message -->
       <template v-for="(message, index) in MESSAGES">
 
@@ -18,6 +18,11 @@ import message from "./message";
 import messageInput from "./messageInput";
 export default {
   components: { message, messageInput },
+  methods: {
+    scrollDown() {
+      this.$refs.messagesBody.scrollTop = this.$refs.messagesBody.scrollHeight;
+    },
+  },
   computed: {
     MESSAGES() {
       return this.$store.getters.MESSAGES(this.$route.params.id);
@@ -28,7 +33,9 @@ export default {
 
     this.$store
       .dispatch("GET_MESSAGES", this.$route.params.id)
-      .then((result) => {})
+      .then((result) => {
+        this.scrollDown();
+      })
       .catch((err) => {});
   },
 };
