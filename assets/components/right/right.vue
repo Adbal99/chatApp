@@ -38,6 +38,13 @@ export default {
       })
       .catch((err) => {});
   },
+  watch: {
+    MESSAGES: function () {
+      this.$nextTick(function () {
+        this.scrollDown();
+      })
+    },
+  },
 };
 </script>
 <style lang="">

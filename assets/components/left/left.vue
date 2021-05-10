@@ -22,12 +22,22 @@ import conversation from "./conversation";
 export default {
   components: { conversation },
   computed: {
-    ...mapGetters(["CONVERSATIONS"]),
+    ...mapGetters(["CONVERSATIONS", "HUBURL"]),
   },
   mounted() {
     this.$store
       .dispatch("GET_CONVERSATIONS")
-      .then((result) => {})
+      .then((result) => {
+        let url = new URL(this.HUBURL);
+        url.searchParams.append("topic", `/conversation/${this.USERNAME}`);
+        const eventSource = new EventSource(url, {
+          withCredentials: true,
+        });
+
+        eventSource.onmessage = function (event) {
+          debugger;
+        };
+      })
       .catch((err) => {});
   },
 };

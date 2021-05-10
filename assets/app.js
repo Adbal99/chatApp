@@ -40,6 +40,7 @@ const router = new VueRouter({
     routes
 })
 
+store.commit("SET_USERNAME", document.querySelector('#app').dataset.username);
 
 new Vue({
     store,

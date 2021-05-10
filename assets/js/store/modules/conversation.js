@@ -1,46 +1,87 @@
 import Vue from "vue";
 
 export default {
-  state: {
-    conversations: [],
-  },
-  getters: {
-    CONVERSATIONS: (state) => state.conversations,
+    state: {
+        conversations: [],
+        hubUrl: null
+    },
+    getters: {
+        CONVERSATIONS: (state) => {
+            return state.conversations.sort((a, b) => {
+                return a.createdAt < b.createdAt;
+            })
+        },
 
-    MESSAGES: (state) => (conversationId) => {
-      return state.conversations[0].find(
-        (i) => i.conversationId === conversationId
-      ).messages;
-    },
-  },
-  mutations: {
-    SET_CONVERSATIONS: (state, payload) => {
-      state.conversations = payload;
-    },
+        MESSAGES: (state) => (conversationId) => {
+            return state.conversations[0].find(
+                (i) => i.conversationId === conversationId
+            ).messages;
+        },
 
-    SET_MESSAGES: (state, { conversationId, payload }) => {
-      Vue.set(
-        state.conversations[0].find((i) => i.conversationId === conversationId),
-        "messages",
-        payload
-      );
+        HUBURL: state => state.hubUrl,
     },
-  },
-  actions: {
-    GET_CONVERSATIONS: ({ commit }) => {
-      return fetch("/conversations")
-        .then((result) => result.json())
-        .then((result) => {
-          commit("SET_CONVERSATIONS", result);
-        });
-    },
+    mutations: {
+        SET_CONVERSATIONS: (state, payload) => {
+            state.conversations = payload;
+        },
 
-    GET_MESSAGES: ({ commit }, conversationId) => {
-      return fetch(`/messages/${conversationId}`)
-        .then((result) => result.json())
-        .then((result) => {
-          commit("SET_MESSAGES", { conversationId, payload: result });
-        });
+        SET_MESSAGES: (state, { conversationId, payload }) => {
+            Vue.set(
+                state.conversations[0].find((i) => i.conversationId === conversationId),
+                "messages",
+                payload
+            );
+        },
+
+        ADD_MESSAGE: (state, { conversationId, payload }) => {
+            state.conversations[0].find((i) => i.conversationId === conversationId).messages.push(payload)
+        },
+
+        SET_CONVERSATION_LAST_MESSAGE: (state, { conversationId, payload }) => {
+            let rs = state.conversations[0].find((i) => i.conversationId === conversationId);
+            rs.content = payload.content;
+            rs.createdAt = payload.createdAt;
+        },
+
+        SET_HUBURL: (state, payload) => state.hubUrl = payload,
     },
-  },
+    actions: {
+        GET_CONVERSATIONS: ({ commit }) => {
+            return fetch("/conversations")
+                .then((result) => {
+                    const hubUrl = result.headers.get('link').match(/<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/)[1];
+                    commit("SET_HUBURL", hubUrl);
+                    return result.json()
+                }
+                )
+                .then((result) => {
+                    commit("SET_CONVERSATIONS", result);
+                });
+        },
+
+        GET_MESSAGES: ({ commit, getters }, conversationId) => {
+            if (getters.MESSAGES(conversationId) === undefined) {
+                return fetch(`/messages/${conversationId}`)
+                    .then((result) => result.json())
+                    .then((result) => {
+                        commit("SET_MESSAGES", { conversationId, payload: result });
+                    });
+            }
+        },
+        POST_MESSAGE: ({ commit }, { conversationId, content }) => {
+
+            let formData = new FormData();
+            formData.append('content', content);
+
+            return fetch(`/messages/${conversationId}`, {
+                method: "POST",
+                body: formData
+            })
+                .then((result) => result.json())
+                .then((result) => {
+                    commit("ADD_MESSAGE", { conversationId, payload: result });
+                    commit("SET_CONVERSATION_LAST_MESSAGE", { conversationId, payload: result });
+                });
+        },
+    },
 };
