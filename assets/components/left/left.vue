@@ -22,20 +22,28 @@ import conversation from "./conversation";
 export default {
   components: { conversation },
   computed: {
-    ...mapGetters(["CONVERSATIONS", "HUBURL"]),
+    ...mapGetters(["CONVERSATIONS", "HUBURL", "USERNAME"]),
+  },
+  methods: {
+    udpdateConversations(data) {
+      this.$store.commit("UPDATE_CONVERSATIONS", data);
+    },
   },
   mounted() {
+    const vm = this;
     this.$store
       .dispatch("GET_CONVERSATIONS")
       .then((result) => {
         let url = new URL(this.HUBURL);
-        url.searchParams.append("topic", `/conversation/${this.USERNAME}`);
+        url.searchParams.append("topic", `/conversations/${this.USERNAME}`);
         const eventSource = new EventSource(url, {
           withCredentials: true,
         });
-
+        
+        //TODO check, why not updating conversation on the other side
         eventSource.onmessage = function (event) {
-          debugger;
+          console.log(event);
+          vm.udpdateConversations(JSON.parse(event.data));
         };
       })
       .catch((err) => {});

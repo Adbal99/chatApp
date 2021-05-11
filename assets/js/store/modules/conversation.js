@@ -44,6 +44,15 @@ export default {
         },
 
         SET_HUBURL: (state, payload) => state.hubUrl = payload,
+
+        UPDATE_CONVERSATIONS: (state, payload) => {
+            let rs = state.conversations[0].find((i) => i.conversationId === payload.conversation.id);
+            rs.content = payload.content;
+            rs.createdAt = payload.createdAt;
+            console.log(rs);
+            console.log(payload);
+        }
+
     },
     actions: {
         GET_CONVERSATIONS: ({ commit }) => {
