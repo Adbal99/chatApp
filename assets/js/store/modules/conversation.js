@@ -35,6 +35,7 @@ export default {
 
         ADD_MESSAGE: (state, { conversationId, payload }) => {
             state.conversations[0].find((i) => i.conversationId === conversationId).messages.push(payload)
+            console.log(payload);
         },
 
         SET_CONVERSATION_LAST_MESSAGE: (state, { conversationId, payload }) => {

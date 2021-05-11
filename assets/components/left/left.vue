@@ -39,10 +39,9 @@ export default {
         const eventSource = new EventSource(url, {
           withCredentials: true,
         });
-        
+
         //TODO check, why not updating conversation on the other side
         eventSource.onmessage = function (event) {
-          console.log(event);
           vm.udpdateConversations(JSON.parse(event.data));
         };
       })

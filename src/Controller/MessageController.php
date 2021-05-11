@@ -58,11 +58,18 @@ class MessageController extends AbstractController
         /**
          * @var   Message  $message  
          */
-        array_map(function ($message) {
+        foreach ($messages as $key => $message) {
             $message->setMine(
                 $message->getUser()->getId() === $this->getUser()->getId() ? true : false
             );
-        }, $messages);
+        }
+
+        
+        // array_map(function ($message) {
+        //     $message->setMine(
+        //         $message->getUser()->getId() === $this->getUser()->getId() ? true : false
+        //     );
+        // }, $messages);
 
         return $this->json($messages, Response::HTTP_OK, [], [
             'attributes' => self::ATTRIBUTES_TO_SERIALIZE
