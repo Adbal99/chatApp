@@ -18,6 +18,11 @@ import { mapGetters } from "vuex";
 import message from "./message";
 import messageInput from "./messageInput";
 export default {
+  data() {
+    return {
+      eventSource: null,
+    };
+  },
   components: { message, messageInput },
   methods: {
     scrollDown() {
@@ -39,33 +44,40 @@ export default {
   },
   mounted() {
     const vm = this;
-    // console.log(this.$route.params.id)
 
     this.$store
       .dispatch("GET_MESSAGES", this.$route.params.id)
       .then(() => {
         this.scrollDown();
+        if (this.eventSource === null) {
           let url = new URL(this.HUBURL);
           url.searchParams.append(
             "topic",
             `/conversations/${this.$route.params.id}`
           );
-          const eventSource = new EventSource(url, {
+          this.eventSource = new EventSource(url, {
             withCredentials: true,
           });
 
-          eventSource.onmessage = function (event) {
-            console.log(event);
+          this.eventSource.onmessage = function (event) {
             vm.addMessage(JSON.parse(event.data));
           };
+        }
       })
       .catch((err) => {});
   },
+
   watch: {
     MESSAGES: function () {
       this.$nextTick(function () {
         this.scrollDown();
       });
+    },
+
+    beforeDestroy() {
+      if (this.eventSource instanceof EventSource) {
+        this.eventSource.close();
+      }
     },
   },
 };

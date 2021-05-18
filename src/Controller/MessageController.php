@@ -64,7 +64,7 @@ class MessageController extends AbstractController
             );
         }
 
-        
+
         // array_map(function ($message) {
         //     $message->setMine(
         //         $message->getUser()->getId() === $this->getUser()->getId() ? true : false
@@ -84,7 +84,7 @@ class MessageController extends AbstractController
         // $user = $this->userRep->findOneBy(['id' => 2,]);
         $user = $this->getUser();
 
-        $recipient = $this->participantRepository->findParticipantByConversationIdAndUserid(
+        $recipient = $this->participantRepository->findParticipantByConverstionIdAndUserId(
             $conversation->getId(),
             $user->getId()
         );
@@ -120,6 +120,7 @@ class MessageController extends AbstractController
             'attributes' => [...self::ATTRIBUTES_TO_SERIALIZE, 'conversation' => ['id']]
         ]);
 
+        $message->setMine(true);
 
         $update = new Update(
             [
@@ -130,9 +131,9 @@ class MessageController extends AbstractController
             true
         );
 
+
         $this->publisher->__invoke($update);
 
-        $message->setMine(true);
 
 
         return $this->json($message, Response::HTTP_CREATED, [], [

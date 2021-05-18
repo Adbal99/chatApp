@@ -4,7 +4,7 @@
   <header class="text-center">
     <h1 class="display-4 text-white">Bootstrap Chat</h1>
     <p class="text-white lead mb-0">An elegant chat widget compatible with Bootstrap 4</p>
-    <p class="text-white lead mb-4">Snippet by
+    <p class="text-white lead mb-4">Made by
       <a href="https://bootstrapious.com" class="text-white">
         <u>Bootstrapious</u></a>
     </p>
