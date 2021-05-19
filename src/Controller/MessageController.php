@@ -72,7 +72,7 @@ class MessageController extends AbstractController
         // }, $messages);
 
         return $this->json($messages, Response::HTTP_OK, [], [
-            'attributes' => self::ATTRIBUTES_TO_SERIALIZE
+            'attributes' => [...self::ATTRIBUTES_TO_SERIALIZE, 'user' => ['username']]
         ]);
     }
 
@@ -117,7 +117,7 @@ class MessageController extends AbstractController
 
         $message->setMine(false);
         $messageSerialized = $serializerInterface->serialize($message, 'json', [
-            'attributes' => [...self::ATTRIBUTES_TO_SERIALIZE, 'conversation' => ['id']]
+            'attributes' => [...self::ATTRIBUTES_TO_SERIALIZE, 'conversation' => ['id'], 'user' => ['username']]
         ]);
 
         $message->setMine(true);
@@ -137,7 +137,7 @@ class MessageController extends AbstractController
 
 
         return $this->json($message, Response::HTTP_CREATED, [], [
-            'attributes' => self::ATTRIBUTES_TO_SERIALIZE
+            'attributes' => [...self::ATTRIBUTES_TO_SERIALIZE, 'user' => ['username']]
         ]);
     }
 }
